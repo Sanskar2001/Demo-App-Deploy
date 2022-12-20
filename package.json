@@ -1,0 +1,50 @@
+{
+  "name": "stripe-sample",
+  "version": "0.1.0",
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@juspay-tech/orca-node": "0.0.2",
+    "@juspay/orca-js": "file://../orca-js",
+    "@juspay/react-orca-js": "file://../react-orca-js",
+    "@mui/icons-material": "^5.10.16",
+    "@mui/material": "^5.10.17",
+    "@stripe/react-stripe-js": "^1.0.0",
+    "@stripe/stripe-js": "^1.0.0",
+    "express": "^4.17.1",
+    "ngrok": "^4.3.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "^3.4.0",
+    "stripe": "^8.202.0"
+  },
+  "devDependencies": {
+    "concurrently": "4.1.2",
+    "netlify-cli": "^12.2.7"
+  },
+  "homepage": "http://localhost:3000",
+  "proxy": "http://localhost:4242",
+  "scripts": {
+    "start-client": "react-scripts start",
+    "start-server": "node server.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start": "concurrently \"yarn start-client\" \"yarn start-server\""
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
