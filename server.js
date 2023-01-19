@@ -4,7 +4,9 @@ const app = express();
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
 //const stripe = require("stripe")('sk_test_51KP0OALGEyT9T908osoVeWhMnrKSg6YibXTA84rLY5gGWvahr3uHZhAjKGXFicuNgPbZv2uYhIiylKsDHpKBcNuz00da02MYkB');
-const stripe = require("@juspay-tech/orca-node")('snd_ac2473e233b048f2ab7576e1c03e99dc');
+const stripe = require("@juspay-tech/hyper-node")(
+  "snd_ac2473e233b048f2ab7576e1c03e99dc"
+);
 app.use(express.static("public"));
 app.use(express.json());
 
@@ -14,7 +16,6 @@ const calculateOrderAmount = (items) => {
   // people from directly manipulating the amount on the client
   return 6500;
 };
-
 
 app.post("/create-payment-intent", async (req, res) => {
   const { items } = req.body;
@@ -54,12 +55,10 @@ app.post("/create-payment-intent", async (req, res) => {
     // }
   });
 
-
   res.send({
     clientSecret: paymentIntent.client_secret,
   });
 });
-
 
 app.post("/create-customer", async (req, res) => {
   const { items } = req.body;
@@ -104,10 +103,10 @@ app.post("/create-customer", async (req, res) => {
   //   // }
   // });
   const customer = await stripe.customers.create({
-    description: 'My First Test Customer (created for API docs at https://www.stripe.com/docs/api)',
-    email: "bopannamj@gmail.com"
+    description:
+      "My First Test Customer (created for API docs at https://www.stripe.com/docs/api)",
+    email: "bopannamj@gmail.com",
   });
-
 
   res.send({
     customer: customer.id,

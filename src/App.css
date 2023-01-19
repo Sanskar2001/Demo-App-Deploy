@@ -14,7 +14,7 @@ body {
   width: 100vw;
   margin: 0;
   font-family: Poppins;
-  transition: background-color 600ms linear
+  transition: background-color 600ms linear;
 }
 
 form {
@@ -23,7 +23,6 @@ form {
   align-self: center;
   border-radius: 7px;
 }
-
 
 #payment-message {
   color: rgb(105, 115, 134);
@@ -87,7 +86,7 @@ button:disabled {
 .spinner:before,
 .spinner:after {
   position: absolute;
-  content: '';
+  content: "";
 }
 
 .spinner:before {
@@ -139,7 +138,8 @@ button:disabled {
 
 .editor {
   position: absolute;
-  padding: 50px;
+  padding: 15rem;
+  margin-left: 15rem;
   left: 0;
   top: 0;
 }
@@ -153,9 +153,9 @@ button:disabled {
 }
 .layout {
   position: absolute;
-    padding: 50px;
-    left: 10%;
-    top: 6%;
+  padding: 50px;
+  left: 10%;
+  top: 6%;
 }
 .dialog {
   position: absolute;
@@ -164,11 +164,13 @@ button:disabled {
   top: 0;
 }
 .cardtest {
-column-gap: 10px;
+  column-gap: 10px;
 }
 
-@media screen and (max-width:728px) {
-  .editor, .layout, .dialog {
+@media screen and (max-width: 728px) {
+  .editor,
+  .layout,
+  .dialog {
     display: none;
   }
 }

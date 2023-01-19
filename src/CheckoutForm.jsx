@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Switch, { SwitchProps } from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
+import Switch, { SwitchProps } from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import {
   CardNumber,
   PaymentElement,
@@ -9,26 +9,28 @@ import {
   CardElement,
   useElements,
   useStripe,
-  PaymentRequestButtonElement,
-} from "@juspay/react-orca-js";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { CardNumberElement } from "@stripe/react-stripe-js";
+  // PaymentRequestButtonElement,
+} from "@juspay-tech/react-hyper-js";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+
 //import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
 
-
-export default function CheckoutForm(locale, selectedMenu) {
+export default function CheckoutForm({
+  locale,
+  selectedMenu,
+  options1,
+  layout,
+  setLayout,
+}) {
   const stripe = useStripe();
   const elements = useElements();
 
-
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [layout, setLayout] = React.useState('tabs');
-
 
   const [paymentRequest, setPaymentRequest] = useState(null);
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function CheckoutForm(locale, selectedMenu) {
     }
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      console.log("inisde effect", paymentIntent)
+      console.log("inisde effect", paymentIntent);
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
@@ -83,7 +85,6 @@ export default function CheckoutForm(locale, selectedMenu) {
     });
   }, [stripe]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -95,7 +96,7 @@ export default function CheckoutForm(locale, selectedMenu) {
 
     setIsLoading(true);
 
-    console.log("ELEMENTS", elements)
+    console.log("ELEMENTS", elements);
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -103,7 +104,7 @@ export default function CheckoutForm(locale, selectedMenu) {
         return_url: "http://localhost:3000/complete",
       },
     });
-    console.log("ERORR", error)
+    console.log("ERORR", error);
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
@@ -154,77 +155,67 @@ export default function CheckoutForm(locale, selectedMenu) {
     //     color: '#FFC7EE',
     //   },
     // },
-  }
-  let layout1 = {
-    type: layout == "spaced" ? "accordion" : layout,
-    defaultCollapsed: false,
-    radios: true,
-    spacedAccordionItems: layout == "spaced",
-  }
-  const options1 = {
-    fields: {
-      billingDetails: {
-        address: {
-          country: "auto",
-          city: "auto"
-        }
-      }
-    },
-    layout: layout1,
-    // layout: {
-    //   type: 'orca',
-    //   defaultCollapsed: false,
-    //   radios: false,
-    //   spacedAccordionItems: true
-    // },
-    paymentMethodOrder: ["klarna", "wechat_pay"],
-    wallets: {
-      applePay: "auto",
-      googlePay: "auto",
-    }
-  }
+  };
 
-  const x = locale.locale === "ja" ? `今払う` : locale.locale === "ar" ? `ادفع الآن` : "Pay Now"
+  const x =
+    locale.locale === "ja"
+      ? `今払う`
+      : locale.locale === "ar"
+      ? `ادفع الآن`
+      : "Pay Now";
   // if (paymentRequest) {
   //   return <PaymentRequestButtonElement options={{ paymentRequest }} />
   // }
 
-  var ui = <PaymentElement id="paymentElement" options={options1} />
-  let paymentElement = <> {layout == "accordion" && ui}
-    {layout == "tabs" && ui}
-    {layout == "spaced" && ui}</>
+  var ui = <PaymentElement id="paymentElement" options={options1} />;
+  let paymentElement = (
+    <>
+      {" "}
+      {layout === "accordion" && ui}
+      {layout === "tabs" && ui}
+      {layout === "spaced" && ui}
+    </>
+  );
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      {selectedMenu && <div className="layout">
-        <div className="menuHeader">Layout</div>
-        <FormControl>
-          <RadioGroup
-            aria-labelledby="demo-controlled-radio-buttons-group"
-            name="controlled-radio-buttons-group"
-            value={layout}
-            onChange={event => {
-              setLayout((event.target).value)
-            }}
-            sx={{
-              color: '#aaa7a7',
-            }}
-          >
-            <FormControlLabel value="tabs" control={<Radio />} label="Tabs" />
-            <FormControlLabel value="accordion" control={<Radio />} label="Accordion" />
-            <FormControlLabel value="spaced" control={<Radio />} label="Spaced Accordion" />
-          </RadioGroup>
-
-        </FormControl>
-      </div>}
+      {selectedMenu && (
+        <div className="layout">
+          <div className="menuHeader">Layout</div>
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={layout}
+              onChange={(event) => {
+                setLayout(event.target.value);
+              }}
+              sx={{
+                color: "#aaa7a7",
+              }}
+            >
+              <FormControlLabel value="tabs" control={<Radio />} label="Tabs" />
+              <FormControlLabel
+                value="accordion"
+                control={<Radio />}
+                label="Accordion"
+              />
+              <FormControlLabel
+                value="spaced"
+                control={<Radio />}
+                label="Spaced Accordion"
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+      )}
       {/* <PaymentRequestButtonElement id="paymentButton" /> */}
 
-      <PaymentRequestButtonElement id="paymentButton" />
-      {/* {paymentElement} */}
+      {/* <PaymentRequestButtonElement id="paymentButton" /> */}
+      {paymentElement}
       {/* <CardElement id="sds" options={options} /> */}
       {/* <CardNumber id="card-number" options={options} />
       <CardCVC id="card-cvc" options={options} />
       <CardExpiry id="card-expiry" options={options} /> */}
-
 
       <button id="submit">
         <span id="button-text">
