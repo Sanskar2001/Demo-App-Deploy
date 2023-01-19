@@ -1,21 +1,14 @@
 import React, { useState } from "react";
 import { loadHyper } from "@juspay-tech/hyper-js";
 import { Elements } from "@juspay-tech/react-hyper-js";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-// import FormLabel from "@mui/material/FormLabel";
 import CheckoutForm from "./CheckoutForm";
-import DialogComp from "./DialogComp";
 import "./App.css";
 
-//const stripePromise = loadStripe("pk_test_51KP0OALGEyT9T908Fv0PuwhRMQ2N9sWsrwZQS5hvTan6m6e73Bsv42DyTQwiw63jlluM1tvzeemOrXlE1AvmKY3D00R0yeN1my");
 const stripePromise = loadHyper("pk_snd_f2335975798246238ac421cac506b503");
 
 export default function App() {
