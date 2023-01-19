@@ -138,8 +138,7 @@ button:disabled {
 
 .editor {
   position: absolute;
-  padding: 15rem;
-  margin-left: 15rem;
+  padding: 200px;
   left: 0;
   top: 0;
 }

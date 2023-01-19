@@ -217,13 +217,13 @@ export default function CheckoutForm({
       <CardCVC id="card-cvc" options={options} />
       <CardExpiry id="card-expiry" options={options} /> */}
 
-      <button id="submit">
+      {/* <button id="submit">
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : x}
         </span>
-      </button>
+      </button> */}
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {/* {message && <div id="payment-message">{message}</div>} */}
     </form>
   );
 }
