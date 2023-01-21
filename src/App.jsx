@@ -9,10 +9,12 @@ import FormControl from "@mui/material/FormControl";
 import CheckoutForm from "./CheckoutForm";
 import "./App.css";
 
-const stripePromise = loadHyper("pk_snd_f2335975798246238ac421cac506b503");
+const stripePromise = loadHyper("pk_snd_1e5425f5dea94ee793cf34ea326294d8");
 
 export default function App() {
-  const [clientSecret, setClientSecret] = useState("pay_sdsd_secret_sdsd");
+  const [clientSecret, setClientSecret] = useState(
+    "pay_e6B1fTGHzVu8fEj5kBhj_secret_Nb56qhqYM0EI2BxXJBYH"
+  );
   const [theme, setTheme] = React.useState("default");
   const [locale, setLocale] = React.useState("");
   const [layout, setLayout] = React.useState("tabs");
@@ -76,17 +78,7 @@ export default function App() {
       },
     },
     layout: layout1,
-    // layout: {
-    //   type: 'orca',
-    //   defaultCollapsed: false,
-    //   radios: false,
-    //   spacedAccordionItems: true
-    // },
     paymentMethodOrder: ["klarna", "wechat_pay"],
-    wallets: {
-      applePay: "auto",
-      googlePay: "auto",
-    },
   };
 
   document.body.style.background =

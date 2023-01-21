@@ -4,7 +4,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@juspay-tech/hyper-js": "^0.0.1",
+    "@juspay-tech/hyper-js": "^0.0.3",
     "@juspay-tech/hyper-node": "^0.0.2",
     "@juspay-tech/react-hyper-js": "^0.0.1",
     "@mui/icons-material": "^5.10.16",

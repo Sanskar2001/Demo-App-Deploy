@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Switch, { SwitchProps } from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
 import {
-  CardNumber,
   PaymentElement,
-  CardCVC,
-  CardExpiry,
-  CardElement,
-  useElements,
-  useStripe,
-  // PaymentRequestButtonElement,
+  useHyper,
+  useWidgets,
 } from "@juspay-tech/react-hyper-js";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 
 //import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
 
@@ -26,13 +18,13 @@ export default function CheckoutForm({
   layout,
   setLayout,
 }) {
-  const stripe = useStripe();
-  const elements = useElements();
+  console.log("options1", options1);
+  const stripe = useHyper();
+  const elements = useWidgets();
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [paymentRequest, setPaymentRequest] = useState(null);
   useEffect(() => {
     if (!stripe) {
       return;
@@ -119,50 +111,50 @@ export default function CheckoutForm({
 
     setIsLoading(false);
   };
-  const options = {
-    // style: {
-    //   base: {
-    //     iconColor: '#c4f0ff',
-    //     color: 'green',
-    //     fontWeight: '800',
-    //     fontFamily: 'Combo',
-    //     fontSize: '16px',
-    //     fontSmoothing: 'antialiased',
-    //     ':-webkit-autofill': {
-    //       color: '#fce883',
-    //     },
-    //     '::placeholder': {
-    //       color: '#87BBFD',
-    //     },
-    //     ':hover': {
-    //       backgroundColor: 'lightblue',
-    //     },
-    //   },
-    //   invalid: {
-    //     backgroundColor: 'red',
-    //     iconColor: '#FFC7EE',
-    //     color: '#FFC7EE',
-    //     fontSize: '30px',
-    //   },
-    //   complete: {
-    //     backgroundColor: 'gray',
-    //     iconColor: '#FFC7EE',
-    //     color: 'brown',
-    //   },
-    //   empty: {
-    //     backgroundColor: 'green',
-    //     iconColor: '#FFC7EE',
-    //     color: '#FFC7EE',
-    //   },
-    // },
-  };
+  // const options = {
+  //   // style: {
+  //   //   base: {
+  //   //     iconColor: '#c4f0ff',
+  //   //     color: 'green',
+  //   //     fontWeight: '800',
+  //   //     fontFamily: 'Combo',
+  //   //     fontSize: '16px',
+  //   //     fontSmoothing: 'antialiased',
+  //   //     ':-webkit-autofill': {
+  //   //       color: '#fce883',
+  //   //     },
+  //   //     '::placeholder': {
+  //   //       color: '#87BBFD',
+  //   //     },
+  //   //     ':hover': {
+  //   //       backgroundColor: 'lightblue',
+  //   //     },
+  //   //   },
+  //   //   invalid: {
+  //   //     backgroundColor: 'red',
+  //   //     iconColor: '#FFC7EE',
+  //   //     color: '#FFC7EE',
+  //   //     fontSize: '30px',
+  //   //   },
+  //   //   complete: {
+  //   //     backgroundColor: 'gray',
+  //   //     iconColor: '#FFC7EE',
+  //   //     color: 'brown',
+  //   //   },
+  //   //   empty: {
+  //   //     backgroundColor: 'green',
+  //   //     iconColor: '#FFC7EE',
+  //   //     color: '#FFC7EE',
+  //   //   },
+  //   // },
+  // };
 
-  const x =
-    locale.locale === "ja"
-      ? `今払う`
-      : locale.locale === "ar"
-      ? `ادفع الآن`
-      : "Pay Now";
+  // const x =
+  //   locale.locale === "ja"
+  //     ? `今払う`
+  //     : locale.locale === "ar"
+  //     ? `ادفع الآن`
+  //     : "Pay Now";
   // if (paymentRequest) {
   //   return <PaymentRequestButtonElement options={{ paymentRequest }} />
   // }
