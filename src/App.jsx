@@ -1,15 +1,27 @@
 import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import { loadHyper } from "@juspay-tech/hyper-js";
 import { Elements } from "@juspay-tech/react-hyper-js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
 import CheckoutForm from "./CheckoutForm";
+import { FormControl, Select, MenuItem } from "@material-ui/core";
 import "./App.css";
 
 const stripePromise = loadHyper("pk_snd_1e5425f5dea94ee793cf34ea326294d8");
+
+const useStyles = (theme) =>
+  makeStyles(() => ({
+    selected: {
+      color: theme === "midnight" || theme === "soft" ? "#FFFFFF" : "#000000",
+      borderBottom:
+        theme === "midnight" || theme === "soft"
+          ? "2px solid white"
+          : "2px solid black",
+      "& .MuiSvgIcon-root": {
+        color: theme === "midnight" || theme === "soft" ? "#FFFFFF" : "#000000",
+      },
+    },
+  }));
 
 export default function App() {
   const [clientSecret, setClientSecret] = useState(
@@ -18,6 +30,18 @@ export default function App() {
   const [theme, setTheme] = React.useState("default");
   const [locale, setLocale] = React.useState("");
   const [layout, setLayout] = React.useState("tabs");
+  const [themeValues] = React.useState([
+    "Default",
+    "Brutal",
+    "Midnight",
+    "Soft",
+    "None",
+    "Charcoal",
+  ]);
+  const [layoutValues] = React.useState(["Tabs", "Accordion", "Spaced"]);
+  const [selectedTheme, setSelectedTheme] = useState("Default");
+  const [selectedLayout, setSelectedLayout] = useState("Tabs");
+  const styles = useStyles(theme)();
 
   const darkTheme = createTheme({
     palette: {
@@ -31,8 +55,13 @@ export default function App() {
     },
   });
   const handleThemeChange = (event) => {
-    setTheme(event.target.value);
-    setLocale("");
+    setTheme(event.target.value.toLowerCase());
+    setSelectedTheme(event.target.value);
+  };
+
+  const handleLayoutChange = (event) => {
+    setLayout(event.target.value.toLowerCase());
+    setSelectedLayout(event.target.value);
   };
 
   let options = {
@@ -91,128 +120,104 @@ export default function App() {
       : options.appearance.theme === "brutal"
       ? "#7cff708a"
       : "#ddd8d812";
+
   var elements = (
-    <Elements options={options} stripe={stripePromise}>
-      <CheckoutForm
-        locale={options.locale}
-        options1={options1}
-        layout={layout}
-        setLayout={setLayout}
-      />
-    </Elements>
+    <div>
+      <Elements options={options} stripe={stripePromise}>
+        <CheckoutForm
+          locale={options.locale}
+          options1={options1}
+          layout={layout}
+          setLayout={setLayout}
+        />
+      </Elements>
+    </div>
   );
 
   return (
-    <div className="App">
+    <div>
       {clientSecret && (
         <div>
           <ThemeProvider theme={darkTheme}>
-            <div className="editor">
-              <div className="menuHeader">{"Theme"}</div>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  value={theme}
-                  onChange={handleThemeChange}
-                  sx={{
-                    color: "#aaa7a7",
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    marginRight: "10px",
+                    fontWeight: "bold",
                   }}
+                  className={styles.selected}
                 >
-                  <FormControlLabel
-                    value="default"
-                    control={<Radio />}
-                    label="Default"
-                  />
-                  <FormControlLabel
-                    value="brutal"
-                    control={<Radio />}
-                    label="Brutal"
-                  />
-                  <FormControlLabel
-                    value="midnight"
-                    control={<Radio />}
-                    label="Midnight"
-                  />
-                  <FormControlLabel
-                    value="soft"
-                    control={<Radio />}
-                    label="Soft"
-                  />
-                  <FormControlLabel
-                    value="none"
-                    control={<Radio />}
-                    label="None"
-                  />
-                  <FormControlLabel
-                    value="charcoal"
-                    control={<Radio />}
-                    label="Charcoal"
-                  />
-                </RadioGroup>
-              </FormControl>
+                  {"Theme -"}
+                </div>
+                <FormControl>
+                  <Select
+                    value={selectedTheme}
+                    onChange={handleThemeChange}
+                    className={styles.selected}
+                    inputProps={{
+                      name: "theme",
+                      id: "theme",
+                    }}
+                  >
+                    {themeValues.map((value, index) => {
+                      return (
+                        <MenuItem key={index} value={value}>
+                          {value}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </div>
 
-              {/* <div className="menuHeader">{"Language"}</div>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  value={locale}
-                  onChange={(event) => {
-                    setLocale(event.target.value);
-                    setTheme("");
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    marginRight: "10px",
+                    fontWeight: "bold",
                   }}
-                  sx={{
-                    color: "#aaa7a7",
-                  }}
+                  className={styles.selected}
                 >
-                  <FormControlLabel
-                    value="auto"
-                    control={<Radio />}
-                    label="Auto"
-                  />
-                  <FormControlLabel
-                    value="ar"
-                    control={<Radio />}
-                    label="Arabic"
-                  />
-                  <FormControlLabel
-                    value="ja"
-                    control={<Radio />}
-                    label="Japanese"
-                  />
-                </RadioGroup>
-              </FormControl> */}
-              <div className="menuHeader">{"Layout"}</div>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  value={layout}
-                  onChange={(event) => {
-                    setLayout(event.target.value);
-                  }}
-                  sx={{
-                    color: "#aaa7a7",
-                  }}
-                >
-                  <FormControlLabel
-                    value="tabs"
-                    control={<Radio />}
-                    label="Tabs"
-                  />
-                  <FormControlLabel
-                    value="accordion"
-                    control={<Radio />}
-                    label="Accordion"
-                  />
-                  <FormControlLabel
-                    value="spaced"
-                    control={<Radio />}
-                    label="Spaced Accordion"
-                  />
-                </RadioGroup>
-              </FormControl>
+                  {"Layout -"}
+                </div>
+                <FormControl>
+                  <Select
+                    value={selectedLayout}
+                    onChange={handleLayoutChange}
+                    className={styles.selected}
+                    inputProps={{
+                      name: "layout",
+                      id: "layout",
+                    }}
+                  >
+                    {layoutValues.map((value, index) => {
+                      return (
+                        <MenuItem key={index} value={value}>
+                          {value}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </div>
             </div>
 
             {theme === "default" && elements}
