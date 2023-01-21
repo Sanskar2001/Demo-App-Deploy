@@ -78,7 +78,7 @@ export default function App() {
       },
     },
     layout: layout1,
-    paymentMethodOrder: ["klarna", "wechat_pay"],
+    // paymentMethodOrder: ["cards", "klarna"],
   };
 
   document.body.style.background =
