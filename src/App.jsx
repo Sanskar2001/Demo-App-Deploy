@@ -4,7 +4,7 @@ import { loadHyper } from "@juspay-tech/hyper-js";
 import { Elements } from "@juspay-tech/react-hyper-js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CheckoutForm from "./CheckoutForm";
-import { FormControl, Select, MenuItem } from "@material-ui/core";
+import { FormControl, Select, MenuItem, Button } from "@material-ui/core";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -27,68 +27,62 @@ export default function App() {
   const [clientSecret, setClientSecret] = useState(null);
   const [stripePromise, setStripePromise] = useState(null);
 
-  const fetcher = async() => {
+  const fetcher = async () => {
     let response = await fetch(
-      'https://u4kkpaenwc.execute-api.ap-south-1.amazonaws.com/default/create-payment-intent',
+      "https://u4kkpaenwc.execute-api.ap-south-1.amazonaws.com/default/create-payment-intent",
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           amount: 6541,
-          currency: 'USD',
+          currency: "USD",
           confirm: false,
-          capture_method: 'automatic',
-          authentication_type: 'no_three_ds',
+          capture_method: "automatic",
+          authentication_type: "no_three_ds",
         }),
-      },
+      }
     );
 
     const data = await response.json();
-    setClientSecret(data.clientSecret)
-    setStripePromise(loadHyper(data.publishableKey))
+    setClientSecret(data.clientSecret);
+    setStripePromise(loadHyper(data.publishableKey));
 
     let obj = {
-      "initialProps": {
-        "props": {
-          "publishableKey": data.publishableKey,
-          "configuration": {
+      initialProps: {
+        props: {
+          publishableKey: data.publishableKey,
+          configuration: {
             // "appearance": appearance,
-            "allowsDelayedPaymentMethods": true,
-            "merchantDisplayName": "Example, Inc.",
-            "allowsPaymentMethodsRequiringShippingAddress": false,
-            "googlePay": {
-              "environment": "Test",
-              "countryCode": "US",
-              "currencyCode": "US",
+            allowsDelayedPaymentMethods: true,
+            merchantDisplayName: "Example, Inc.",
+            allowsPaymentMethodsRequiringShippingAddress: false,
+            googlePay: {
+              environment: "Test",
+              countryCode: "US",
+              currencyCode: "US",
             },
           },
-          "appId": "com.example.nativeapp",
-          "type": "payment",
-          "clientSecret": data.clientSecret,
+          appId: "com.example.nativeapp",
+          type: "payment",
+          clientSecret: data.clientSecret,
         },
       },
+    };
+
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(JSON.stringify(obj), "*");
     }
+  };
 
-    iframeRef.current.contentWindow.postMessage(
-      JSON.stringify(obj),
-      "*",
-    )
-  }
-
-  useEffect(()=>{
-    fetcher()
-  },[])
+  useEffect(() => {
+    fetcher();
+  }, []);
 
   const [theme, setTheme] = React.useState("default");
-  const [locale, setLocale] = React.useState("");
+  // const [locale, setLocale] = React.useState("");
   const [layout, setLayout] = React.useState("tabs");
-  const [themeValues] = React.useState([
-    "Default",
-    "Brutal",
-    "Midnight",
-    "Soft",
-    "None",
-    "Charcoal",
-  ]);
+  const [themeValues] = React.useState(["Default", "Brutal", "Midnight"]);
+
+  const [themeValues2] = React.useState(["Soft", "Charcoal"]);
   const [layoutValues] = React.useState(["Tabs", "Accordion", "Spaced"]);
   const [selectedTheme, setSelectedTheme] = useState("Default");
   const [selectedLayout, setSelectedLayout] = useState("Tabs");
@@ -108,6 +102,11 @@ export default function App() {
   const handleThemeChange = (event) => {
     setTheme(event.target.value.toLowerCase());
     setSelectedTheme(event.target.value);
+  };
+
+  const handleThemeChange2 = (value) => {
+    setTheme(value.toLowerCase());
+    setSelectedTheme(value);
   };
 
   const handleLayoutChange = (event) => {
@@ -138,7 +137,7 @@ export default function App() {
         weight: "700",
       },
     ],
-    locale: locale,
+    // locale: locale,
     loader: "always",
   };
 
@@ -173,10 +172,16 @@ export default function App() {
       : "#ddd8d812";
 
   var elements = (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Elements options={options} stripe={stripePromise}>
         <CheckoutForm
-          locale={options.locale}
+          // locale={options.locale}
           options1={options1}
           layout={layout}
           setLayout={setLayout}
@@ -187,130 +192,180 @@ export default function App() {
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route  path="/" element={
-        (clientSecret && stripePromise && <div>
-          <div>
-            <ThemeProvider theme={darkTheme}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      marginRight: "10px",
-                      fontWeight: "bold",
-                      borderBottom: "0",
-                    }}
-                    className={styles.selected}
-                  >
-                    {"Theme "}
-                  </div>
-                  <FormControl>
-                    <Select
+      <Routes>
+        <Route
+          path="/"
+          element={
+            clientSecret &&
+            stripePromise && (
+              <div>
+                <div>
+                  <ThemeProvider theme={darkTheme}>
+                    <div
                       style={{
-                        borderBottom: "0",
-                      }}
-                      value={selectedTheme}
-                      onChange={handleThemeChange}
-                      className={styles.selected}
-                      inputProps={{
-                        name: "theme",
-                        id: "theme",
+                        display: "block",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "10px",
                       }}
                     >
-                      {themeValues.map((value, index) => {
-                        return (
-                          <MenuItem key={index} value={value}>
-                            {value}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </div>
-    
-                <div
-                  style={{
-                    display: "none",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      marginRight: "10px",
-                      fontWeight: "bold",
-                      borderBottom: "0",
-                    }}
-                    className={styles.selected}
-                  >
-                    {"Layout -"}
-                  </div>
-                  <FormControl>
-                    <Select
-                      style={{
-                        borderBottom: "0",
-                      }}
-                      value={selectedLayout}
-                      onChange={handleLayoutChange}
-                      className={styles.selected}
-                      inputProps={{
-                        name: "layout",
-                        id: "layout",
-                      }}
-                    >
-                      {layoutValues.map((value, index) => {
-                        return (
-                          <MenuItem key={index} value={value}>
-                            {value}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </div>
-              </div>
-    
-              {theme === "default" && elements}
-              {theme === "brutal" && elements}
-              {theme === "midnight" && elements}
-              {theme === "soft" && elements}
-              {theme === "charcoal" && elements}
-              {theme === "none" && elements}
-    
-              {/* {locale === "ar" && elements}
+                      <div
+                        style={{
+                          display: "none",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            marginRight: "10px",
+                            fontWeight: "bold",
+                            borderBottom: "0",
+                          }}
+                          className={styles.selected}
+                        >
+                          {"Theme "}
+                        </div>
+                        <FormControl>
+                          <Select
+                            style={{
+                              borderBottom: "0",
+                            }}
+                            value={selectedTheme}
+                            onChange={handleThemeChange}
+                            className={styles.selected}
+                            inputProps={{
+                              name: "theme",
+                              id: "theme",
+                            }}
+                          >
+                            {themeValues.map((value, index) => {
+                              return (
+                                <MenuItem key={index} value={value}>
+                                  {value}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        </FormControl>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                        }}
+                      >
+                        {themeValues.map((value) => {
+                          return (
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              style={{ margin: "10px" }}
+                              onClick={() => {
+                                handleThemeChange2(value);
+                              }}
+                            >
+                              {value}
+                            </Button>
+                          );
+                        })}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                        }}
+                      >
+                        {themeValues2.map((value) => {
+                          return (
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              style={{ margin: "10px" }}
+                              onClick={() => {
+                                handleThemeChange2(value);
+                              }}
+                            >
+                              {value}
+                            </Button>
+                          );
+                        })}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "none",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            marginRight: "10px",
+                            fontWeight: "bold",
+                            borderBottom: "0",
+                          }}
+                          className={styles.selected}
+                        >
+                          {"Layout -"}
+                        </div>
+                        <FormControl>
+                          <Select
+                            style={{
+                              borderBottom: "0",
+                            }}
+                            value={selectedLayout}
+                            onChange={handleLayoutChange}
+                            className={styles.selected}
+                            inputProps={{
+                              name: "layout",
+                              id: "layout",
+                            }}
+                          >
+                            {layoutValues.map((value, index) => {
+                              return (
+                                <MenuItem key={index} value={value}>
+                                  {value}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
+
+                    {theme === "default" && elements}
+                    {theme === "brutal" && elements}
+                    {theme === "midnight" && elements}
+                    {theme === "soft" && elements}
+                    {theme === "charcoal" && elements}
+
+                    {/* {locale === "ar" && elements}
               {locale === "ja" && elements}
               {locale === "auto" && elements} */}
-            </ThemeProvider>
-          </div>
-        </div>)
-      }/>
-      <Route path="mobile" element={
-        <div className="section">
-          <div className="phone">
-            <div className="screen"> 
-              <iframe
-                title="Mobile"
-                src="/HsIframe.html"
-                width="440px"
-                height="878px"
-                ref={iframeRef}
-              />
+                  </ThemeProvider>
+                </div>
+              </div>
+            )
+          }
+        />
+        <Route
+          path="mobile"
+          element={
+            <div className="section">
+              <div className="phone">
+                <div className="screen">
+                  <iframe
+                    title="Mobile"
+                    src="/HsIframe.html"
+                    width="440px"
+                    height="878px"
+                    ref={iframeRef}
+                    style={{ border: "none" }}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      } />
-    </Routes>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }
