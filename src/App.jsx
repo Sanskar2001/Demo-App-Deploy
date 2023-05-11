@@ -8,8 +8,6 @@ import { FormControl, Select, MenuItem } from "@material-ui/core";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-const stripePromise = loadHyper("pk_snd_3b33cd9404234113804aa1accaabe22f");
-
 const useStyles = (theme) =>
   makeStyles(() => ({
     selected: {
@@ -27,6 +25,7 @@ const useStyles = (theme) =>
 export default function App() {
   let iframeRef = useRef();
   const [clientSecret, setClientSecret] = useState(null);
+  const [stripePromise, setStripePromise] = useState(null);
 
   const fetcher = async() => {
     let response = await fetch(
@@ -45,6 +44,7 @@ export default function App() {
 
     const data = await response.json();
     setClientSecret(data.clientSecret)
+    setStripePromise(loadHyper(data.publishableKey))
 
     let obj = {
       "initialProps": {
@@ -189,112 +189,110 @@ export default function App() {
     <BrowserRouter>
     <Routes>
       <Route  path="/" element={
-        (clientSecret && <div>
-          {clientSecret && (
-            <div>
-              <ThemeProvider theme={darkTheme}>
+        (clientSecret && stripePromise && <div>
+          <div>
+            <ThemeProvider theme={darkTheme}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                }}
+              >
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: "10px",
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      marginRight: "10px",
+                      fontWeight: "bold",
+                      borderBottom: "0",
                     }}
+                    className={styles.selected}
                   >
-                    <div
+                    {"Theme "}
+                  </div>
+                  <FormControl>
+                    <Select
                       style={{
-                        marginRight: "10px",
-                        fontWeight: "bold",
                         borderBottom: "0",
                       }}
+                      value={selectedTheme}
+                      onChange={handleThemeChange}
                       className={styles.selected}
-                    >
-                      {"Theme -"}
-                    </div>
-                    <FormControl>
-                      <Select
-                        style={{
-                          borderBottom: "0",
-                        }}
-                        value={selectedTheme}
-                        onChange={handleThemeChange}
-                        className={styles.selected}
-                        inputProps={{
-                          name: "theme",
-                          id: "theme",
-                        }}
-                      >
-                        {themeValues.map((value, index) => {
-                          return (
-                            <MenuItem key={index} value={value}>
-                              {value}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
-                  </div>
-    
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        marginRight: "10px",
-                        fontWeight: "bold",
-                        borderBottom: "0",
+                      inputProps={{
+                        name: "theme",
+                        id: "theme",
                       }}
-                      className={styles.selected}
                     >
-                      {"Layout -"}
-                    </div>
-                    <FormControl>
-                      <Select
-                        style={{
-                          borderBottom: "0",
-                        }}
-                        value={selectedLayout}
-                        onChange={handleLayoutChange}
-                        className={styles.selected}
-                        inputProps={{
-                          name: "layout",
-                          id: "layout",
-                        }}
-                      >
-                        {layoutValues.map((value, index) => {
-                          return (
-                            <MenuItem key={index} value={value}>
-                              {value}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
-                  </div>
+                      {themeValues.map((value, index) => {
+                        return (
+                          <MenuItem key={index} value={value}>
+                            {value}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
                 </div>
     
-                {theme === "default" && elements}
-                {theme === "brutal" && elements}
-                {theme === "midnight" && elements}
-                {theme === "soft" && elements}
-                {theme === "charcoal" && elements}
-                {theme === "none" && elements}
+                <div
+                  style={{
+                    display: "none",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      marginRight: "10px",
+                      fontWeight: "bold",
+                      borderBottom: "0",
+                    }}
+                    className={styles.selected}
+                  >
+                    {"Layout -"}
+                  </div>
+                  <FormControl>
+                    <Select
+                      style={{
+                        borderBottom: "0",
+                      }}
+                      value={selectedLayout}
+                      onChange={handleLayoutChange}
+                      className={styles.selected}
+                      inputProps={{
+                        name: "layout",
+                        id: "layout",
+                      }}
+                    >
+                      {layoutValues.map((value, index) => {
+                        return (
+                          <MenuItem key={index} value={value}>
+                            {value}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
     
-                {/* {locale === "ar" && elements}
-                {locale === "ja" && elements}
-                {locale === "auto" && elements} */}
-              </ThemeProvider>
-            </div>
-          )}
+              {theme === "default" && elements}
+              {theme === "brutal" && elements}
+              {theme === "midnight" && elements}
+              {theme === "soft" && elements}
+              {theme === "charcoal" && elements}
+              {theme === "none" && elements}
+    
+              {/* {locale === "ar" && elements}
+              {locale === "ja" && elements}
+              {locale === "auto" && elements} */}
+            </ThemeProvider>
+          </div>
         </div>)
       }/>
       <Route path="mobile" element={
