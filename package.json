@@ -4,9 +4,8 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@juspay-tech/hyper-js": "^0.0.3",
-    "@juspay-tech/hyper-node": "^0.0.2",
-    "@juspay-tech/react-hyper-js": "^0.0.1",
+    "@juspay-tech/hyper-js": "^1.1.0",
+    "@juspay-tech/react-hyper-js": "^1.0.1",
     "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.17",
@@ -18,7 +17,8 @@
   },
   "devDependencies": {
     "concurrently": "4.1.2",
-    "netlify-cli": "^12.2.7"
+    "netlify-cli": "^12.2.7",
+    "react-router-dom": "^6.11.1"
   },
   "homepage": "http://localhost:3000",
   "proxy": "http://localhost:4242",

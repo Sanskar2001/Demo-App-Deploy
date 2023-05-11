@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { loadHyper } from "@juspay-tech/hyper-js";
 import { Elements } from "@juspay-tech/react-hyper-js";
@@ -6,8 +6,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CheckoutForm from "./CheckoutForm";
 import { FormControl, Select, MenuItem } from "@material-ui/core";
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-const stripePromise = loadHyper("pk_snd_1e5425f5dea94ee793cf34ea326294d8");
+const stripePromise = loadHyper("pk_snd_3b33cd9404234113804aa1accaabe22f");
 
 const useStyles = (theme) =>
   makeStyles(() => ({
@@ -24,9 +25,59 @@ const useStyles = (theme) =>
   }));
 
 export default function App() {
-  const [clientSecret, setClientSecret] = useState(
-    "pay_e6B1fTGHzVu8fEj5kBhj_secret_Nb56qhqYM0EI2BxXJBYH"
-  );
+  let iframeRef = useRef();
+  const [clientSecret, setClientSecret] = useState(null);
+
+  const fetcher = async() => {
+    let response = await fetch(
+      'https://u4kkpaenwc.execute-api.ap-south-1.amazonaws.com/default/create-payment-intent',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          amount: 6541,
+          currency: 'USD',
+          confirm: false,
+          capture_method: 'automatic',
+          authentication_type: 'no_three_ds',
+        }),
+      },
+    );
+
+    const data = await response.json();
+    setClientSecret(data.clientSecret)
+
+    let obj = {
+      "initialProps": {
+        "props": {
+          "publishableKey": data.publishableKey,
+          "configuration": {
+            // "appearance": appearance,
+            "allowsDelayedPaymentMethods": true,
+            "merchantDisplayName": "Example, Inc.",
+            "allowsPaymentMethodsRequiringShippingAddress": false,
+            "googlePay": {
+              "environment": "Test",
+              "countryCode": "US",
+              "currencyCode": "US",
+            },
+          },
+          "appId": "com.example.nativeapp",
+          "type": "payment",
+          "clientSecret": data.clientSecret,
+        },
+      },
+    }
+
+    iframeRef.current.contentWindow.postMessage(
+      JSON.stringify(obj),
+      "*",
+    )
+  }
+
+  useEffect(()=>{
+    fetcher()
+  },[])
+
   const [theme, setTheme] = React.useState("default");
   const [locale, setLocale] = React.useState("");
   const [layout, setLayout] = React.useState("tabs");
@@ -135,104 +186,133 @@ export default function App() {
   );
 
   return (
-    <div>
-      {clientSecret && (
-        <div>
-          <ThemeProvider theme={darkTheme}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
+    <BrowserRouter>
+    <Routes>
+      <Route  path="/" element={
+        (clientSecret && <div>
+          {clientSecret && (
+            <div>
+              <ThemeProvider theme={darkTheme}>
                 <div
                   style={{
-                    marginRight: "10px",
-                    fontWeight: "bold",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "10px",
                   }}
-                  className={styles.selected}
                 >
-                  {"Theme -"}
-                </div>
-                <FormControl>
-                  <Select
-                    value={selectedTheme}
-                    onChange={handleThemeChange}
-                    className={styles.selected}
-                    inputProps={{
-                      name: "theme",
-                      id: "theme",
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    {themeValues.map((value, index) => {
-                      return (
-                        <MenuItem key={index} value={value}>
-                          {value}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    marginRight: "10px",
-                    fontWeight: "bold",
-                  }}
-                  className={styles.selected}
-                >
-                  {"Layout -"}
-                </div>
-                <FormControl>
-                  <Select
-                    value={selectedLayout}
-                    onChange={handleLayoutChange}
-                    className={styles.selected}
-                    inputProps={{
-                      name: "layout",
-                      id: "layout",
+                    <div
+                      style={{
+                        marginRight: "10px",
+                        fontWeight: "bold",
+                        borderBottom: "0",
+                      }}
+                      className={styles.selected}
+                    >
+                      {"Theme -"}
+                    </div>
+                    <FormControl>
+                      <Select
+                        style={{
+                          borderBottom: "0",
+                        }}
+                        value={selectedTheme}
+                        onChange={handleThemeChange}
+                        className={styles.selected}
+                        inputProps={{
+                          name: "theme",
+                          id: "theme",
+                        }}
+                      >
+                        {themeValues.map((value, index) => {
+                          return (
+                            <MenuItem key={index} value={value}>
+                              {value}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                  </div>
+    
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    {layoutValues.map((value, index) => {
-                      return (
-                        <MenuItem key={index} value={value}>
-                          {value}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </div>
+                    <div
+                      style={{
+                        marginRight: "10px",
+                        fontWeight: "bold",
+                        borderBottom: "0",
+                      }}
+                      className={styles.selected}
+                    >
+                      {"Layout -"}
+                    </div>
+                    <FormControl>
+                      <Select
+                        style={{
+                          borderBottom: "0",
+                        }}
+                        value={selectedLayout}
+                        onChange={handleLayoutChange}
+                        className={styles.selected}
+                        inputProps={{
+                          name: "layout",
+                          id: "layout",
+                        }}
+                      >
+                        {layoutValues.map((value, index) => {
+                          return (
+                            <MenuItem key={index} value={value}>
+                              {value}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+    
+                {theme === "default" && elements}
+                {theme === "brutal" && elements}
+                {theme === "midnight" && elements}
+                {theme === "soft" && elements}
+                {theme === "charcoal" && elements}
+                {theme === "none" && elements}
+    
+                {/* {locale === "ar" && elements}
+                {locale === "ja" && elements}
+                {locale === "auto" && elements} */}
+              </ThemeProvider>
             </div>
-
-            {theme === "default" && elements}
-            {theme === "brutal" && elements}
-            {theme === "midnight" && elements}
-            {theme === "soft" && elements}
-            {theme === "charcoal" && elements}
-            {theme === "none" && elements}
-
-            {/* {locale === "ar" && elements}
-            {locale === "ja" && elements}
-            {locale === "auto" && elements} */}
-          </ThemeProvider>
+          )}
+        </div>)
+      }/>
+      <Route path="mobile" element={
+        <div className="section">
+          <div className="phone">
+            <div className="screen"> 
+              <iframe
+                title="Mobile"
+                src="/HsIframe.html"
+                width="440px"
+                height="878px"
+                ref={iframeRef}
+              />
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+      } />
+    </Routes>
+    </BrowserRouter>
   );
 }

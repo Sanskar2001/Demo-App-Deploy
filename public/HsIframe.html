@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hyperswitch</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/HyperswitchFavicon.png"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      html,
+      body {
+        font-family: "Inter", sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #app {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .list-item {
+        background-color: rgba(255, 255, 255, 1);
+        padding: 10px;
+        transition: background-color 0.2s;
+      }
+
+      .list-item:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .clickable {
+        cursor: pointer;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: rgba(229, 231, 235, 1);
+          /* background-color: rgba(15, 16, 17, 1); */
+        }
+      }
+      #app-root {
+        display: flex;
+        flex: 1 1 100%;
+        height: 100vh;
+      }
+    </style>
+    <!-- <script defer="defer" src="https://codepush.ms.com/project/index.bundle.js"></script> -->
+    <script defer="defer" src="./index.bundle.js"></script>
+  </head>
+  <body>
+    <div id="app-root"></div>
+  </body>
+</html>
