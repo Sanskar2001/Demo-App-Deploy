@@ -29,7 +29,7 @@ export default function App() {
 
   const fetcher = async () => {
     let response = await fetch(
-      "https://u4kkpaenwc.execute-api.ap-south-1.amazonaws.com/default/create-payment-intent",
+      "https://bscq1qxggd.execute-api.us-east-1.amazonaws.com/default/create-payment-intent",
       {
         method: "POST",
         body: JSON.stringify({
@@ -38,6 +38,8 @@ export default function App() {
           confirm: false,
           capture_method: "automatic",
           authentication_type: "no_three_ds",
+          business_label: "default",
+          business_country: "US",
         }),
       }
     );
